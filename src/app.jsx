@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import NavBar from "../components/layout/NavBar.jsx";
+import Header from "../components/layout/Header.jsx";  // Nuevo Header que contiene Logo y NavBar
 import ItemListContainer from "../components/item/ItemListContainer.jsx";
 import ItemDetailContainer from "../components/item/ItemDetailContainer.jsx";
 import Cart from "../components/cart/Cart.jsx";
@@ -8,7 +8,7 @@ import Cart from "../components/cart/Cart.jsx";
 const App = () => {
   return (
     <>
-      <NavBar />
+      <Header />
       <main style={{ padding: "1rem" }}>
         <Routes>
           <Route path="/" element={<ItemListContainer />} />
