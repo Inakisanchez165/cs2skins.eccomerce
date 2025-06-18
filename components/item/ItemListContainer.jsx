@@ -1,20 +1,37 @@
-import React from "react";
+// components/item/ItemListContainer.jsx
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ItemList from "./ItemList";
-import productosCS2 from "../../data/productosCS2";
+import { collection, getDocs, query, where } from "firebase/firestore";
+import { db } from "../../firebase/firebase";
 
 const ItemListContainer = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { categoryId } = useParams();
 
-  const filteredProducts = categoryId
-    ? productosCS2.filter((p) => p.category === categoryId)
-    : productosCS2;
+  useEffect(() => {
+    const productsRef = collection(db, "products");
+    const q = categoryId
+      ? query(productsRef, where("category", "==", categoryId))
+      : productsRef;
+
+    getDocs(q)
+      .then((snapshot) => {
+        const items = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setProducts(items);
+      })
+      .finally(() => setLoading(false));
+  }, [categoryId]);
 
   return (
-    <div>
-      <h2>{categoryId ? `Categoría: ${categoryId}` : "Todos los skins"}</h2>
-      <ItemList products={filteredProducts} />
-    </div>
+    <>
+      <h2>{categoryId ? `Categoría: ${categoryId}` : "Productos"}</h2>
+      {loading ? <p>Cargando productos...</p> : <ItemList products={products} />}
+    </>
   );
 };
 
